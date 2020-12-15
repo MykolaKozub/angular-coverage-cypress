@@ -1,59 +1,22 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  animations: [
-    trigger('moveInLeft', [
-      transition('void=> *', [style({transform: 'translateX(300px)'}),
-        animate('200ms ease-out', keyframes([
-          style({transform: 'translateX(300px)'}),
-          style({transform: 'translateX(0)'})
+import { AuthenticationService } from './_services';
+import { User } from './_models';
 
-        ]))]),
-      transition('*=>void', [style({transform: 'translateX(0px)'}),
-        animate('250ms ease-in',   keyframes([
-          style({transform: 'translateY(-20px)', opacity: 1, offset: 0.2}),
-          style({transform: 'translateY(250px)', opacity: 0 , offset: 1})
+@Component({ selector: 'app', templateUrl: 'app.component.html' })
+export class AppComponent {
+    currentUser: User;
 
-        ]))])
+    constructor(
+        private router: Router,
+        private authenticationService: AuthenticationService
+    ) {
+        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+    }
 
-    ])
-  ]
-})
-export class AppComponent implements OnInit {
-  @ViewChild('input1', {static: false}) inputEl: ElementRef;
-  todoArray: string[] = [];
-
-  public form: FormGroup;
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.constructForm();
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => this.inputEl.nativeElement.focus());
-  }
-
-  constructForm() {
-    this.form = this.fb.group({
-      todo: this.fb.control(null, Validators.required)
-    });
-  }
-
-  onSubmit() {
-    if (this.form.invalid) { return; }
-    this.todoArray.push(this.form.get('todo').value);
-    this.form.reset();
-  }
-
-  onDeleteItem(index) {
-    this.todoArray.splice(index, 1);
-  }
-
-
+    logout() {
+        this.authenticationService.logout();
+        this.router.navigate(['/login']);
+    }
 }

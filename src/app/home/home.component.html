@@ -1,0 +1,16 @@
+﻿<h1 data-cy="userName">Hi {{currentUser.firstName}}!</h1>
+<p>You're logged in with Angular 7!!</p>
+<h3>All registered users:</h3>
+<ul>
+    <li *ngFor="let user of users">
+        {{user.username}} ({{user.firstName}} {{user.lastName}})
+        - <a (click)="deleteUser(user.id)" class="text-danger">Delete</a>
+    </li>
+</ul>
+<h2>new posts:</h2>
+<ul>
+  <li *ngFor="let post of allPosts; let ind = index" data-cy="item">
+    {{post.title}}
+  </li>
+</ul>
+
